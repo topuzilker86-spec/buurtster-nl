@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buurtster | Lokale Zichtbaarheid & Klantvangst in Amsterdam</title>
+  <meta name="description" content="Buurtster helpt lokale bedrijven in Amsterdam naar de Top 3 op Google Maps, verzamelt automatisch 5-sterren reviews en vangt 24/7 klanten op." />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #1e293b;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #f97316;
+      --accent-dark: #ea580c;
+      --green: #16a34a;
+      --border: #e2e8f0;
+      --blue: #2563eb;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background: #f8fafc;
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+    /* Top bar */
+    .topbar {
+      background: #020617;
+      color: #cbd5e1;
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 1px solid #1e293b;
+    }
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .topbar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #f8fafc;
+      font-weight: 600;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e;
+      display: inline-block;
+    }
+
+    /* Navbar */
+    header {
+      background: var(--bg);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 0;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .logo-star {
+      background: linear-gradient(135deg, #f97316, #fbbf24);
+      color: #0f172a;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 15px;
+      color: #e2e8f0;
+    }
+    .nav-links a:hover { color: #fbbf24; }
+    .lang-switch {
+      display: inline-flex;
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 3px;
+      border: 1px solid #334155;
+    }
+    .lang-btn {
+      border: none;
+      background: transparent;
+      color: #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      padding: 72px 0 80px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .pill {
+      display: inline-block;
+      background: rgba(249, 115, 22, 0.18);
+      border: 1px solid rgba(249, 115, 22, 0.45);
+      color: #fdba74;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      font-size: 44px;
+      line-height: 1.15;
+      font-weight: 800;
+      margin-bottom: 18px;
+      letter-spacing: -0.8px;
+    }
+    .hero h1 span { color: #fbbf24; }
+    .hero p {
+      font-size: 18px;
+      color: #cbd5e1;
+      margin-bottom: 28px;
+      max-width: 600px;
+    }
+    .btn-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(249, 115, 22, 0.35);
+    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-secondary {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #475569;
+    }
+    .btn-whatsapp {
+      background: #16a34a;
+      color: #fff;
+    }
+
+    /* Hero Comparison Card */
+    .compare-card {
+      background: #fff;
+      color: var(--text);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.35);
+    }
+    .compare-title {
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+    .compare-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .compare-box.bad {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+    .compare-box.good {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .compare-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    .tag-bad { color: #dc2626; font-size: 13px; font-weight: 700; }
+    .tag-good { color: #16a34a; font-size: 13px; font-weight: 700; }
+    .compare-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+    .metric-pill {
+      background: rgba(255,255,255,0.85);
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    /* Sections */
+    section { padding: 72px 0; }
+    .section-head {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+    }
+    .section-head h2 {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .section-head p {
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    /* 3 Pillars */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    }
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #fff7ed;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+    .card h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+    .card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* Pricing */
+    .pricing-section { background: #f1f5f9; }
+    .founder-banner {
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      color: #fff;
+      border-radius: 14px;
+      padding: 20px 28px;
+      margin-bottom: 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      border: 2px solid #fbbf24;
+    }
+    .founder-banner strong { color: #fbbf24; font-size: 18px; }
+    .price-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .price-card.featured {
+      border: 2px solid var(--accent);
+      box-shadow: 0 20px 40px rgba(249, 115, 22, 0.14);
+      transform: translateY(-6px);
+    }
+    .popular-badge {
+      position: absolute;
+      top: -13px;
+      right: 20px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .price-name { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .price-sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+    .price-tag {
+      font-size: 40px;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+    .price-tag span { font-size: 16px; font-weight: 500; color: var(--muted); }
+    .setup-fee { font-size: 13px; color: var(--green); font-weight: 700; margin-bottom: 20px; }
+    .feature-list {
+      list-style: none;
+      margin-bottom: 26px;
+    }
+    .feature-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .feature-list li::before {
+      content: "✓";
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    /* Audit Request Form */
+    .scan-box {
+      background: var(--bg);
+      color: #fff;
+      border-radius: 20px;
+      padding: 44px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      align-items: center;
+    }
+    .scan-form {
+      background: #fff;
+      color: var(--text);
+      padding: 28px;
+      border-radius: 14px;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    /* Footer */
+    footer {
+      background: #020617;
+      color: #94a3b8;
+      padding: 48px 0 32px;
+      font-size: 14px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .footer-title {
+      color: #fff;
+      font-weight: 800;
+      margin-bottom: 12px;
+      font-size: 16px;
+    }
+    .kvk-box {
+      display: inline-block;
+      margin-top: 10px;
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid, .grid-3, .scan-box, .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 { font-size: 32px; }
+      .price-card.featured { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="topbar-badge">
+        <span class="dot"></span>
+        <span data-i18n="topbar_left">Amsterdam Lokale Zichtbaarheid & Review Automatisering</span>
+      </div>
+      <div>
+        <strong>KvK:</strong> 42095678 &nbsp;|&nbsp;
+        <a href="mailto:buurtster.nl@gmail.com">buurtster.nl@gmail.com</a> &nbsp;|&nbsp;
+        <a href="tel:+31627418354">+31 6 27418354</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <a href="#" class="logo">
+        <span class="logo-star">★</span>
+        <span>Buurtster</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#diensten" data-i18n="nav_services">Wat wij doen</a>
+        <a href="#pakketten" data-i18n="nav_pricing">Pakketten & Prijzen</a>
+        <a href="#gratis-scan" data-i18n="nav_scan">Gratis Scan</a>
+      </nav>
+      <div class="lang-switch" aria-label="Language switcher">
+        <button class="lang-btn active" onclick="setLang('nl')" id="btn-nl">NL</button>
+        <button class="lang-btn" onclick="setLang('tr')" id="btn-tr">TR</button>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="pill" data-i18n="hero_pill">Speciaal voor lokale bedrijven in Amsterdam</div>
+        <h1 data-i18n="hero_title">Word de <span>#1 keuze in uw wijk</span> op Google Maps.</h1>
+        <p data-i18n="hero_sub">
+          Buurtster beheert uw Google Bedrijfsprofiel, verzamelt automatisch nieuwe 5-sterren reviews van tevreden klanten en vangt gemiste oproepen 24/7 op via WhatsApp.
+        </p>
+        <div class="btn-row">
+          <a href="#gratis-scan" class="btn btn-primary" data-i18n="hero_cta1">Vraag Gratis Zichtbaarheidsscan Aan</a>
+          <a href="https://wa.me/31627418354?text=Hallo%20Buurtster%2C%20ik%20wil%20graag%20een%20gratis%20zichtbaarheidsscan%20voor%20mijn%20bedrijf." target="_blank" class="btn btn-whatsapp" data-i18n="hero_cta2">Direct WhatsApp (+31 6 27418354)</a>
+        </div>
+      </div>
+
+      <!-- Visual Before/After Card -->
+      <div class="compare-card">
+        <div class="compare-title" data-i18n="comp_title">Waarom bellen klanten uw concurrent?</div>
+
+        <div class="compare-box bad">
+          <div class="compare-header">
+            <span data-i18n="comp_before_name">Zonder Buurtster (Gemiddeld bedrijf)</span>
+            <span class="tag-bad" data-i18n="comp_before_rank">Positie #9 op Google</span>
+          </div>
+          <div class="compare-metrics">
+            <div class="metric-pill">★ 4.0 (11 reviews)</div>
+            <div class="metric-pill" data-i18n="comp_b_m2">0% Antwoord</div>
+            <div class="metric-pill" data-i18n="comp_b_m3">Na 18:00 onbereikbaar</div>
+          </div>
+        </div>
+
+        <div class="compare-box good">
+          <div class="compare-header">
+            <span data-i18n="comp_after_name">Met Buurtster (Binnen 60-90 dagen)</span>
+            <span class="tag-good" data-i18n="comp_after_rank">Top 3 in uw buurt</span>
+          </div>
+          <div class="compare-metrics">
+            <div class="metric-pill">★ 4.8 (85+ reviews)</div>
+            <div class="metric-pill" data-i18n="comp_a_m2">100% Antwoord &lt;48u</div>
+            <div class="metric-pill" data-i18n="comp_a_m3">24/7 WhatsApp Opvang</div>
+          </div>
+        </div>
+
+        <p style="font-size:13px; color:#475569; margin-top:8px;" data-i18n="comp_note">
+          78% van de klanten in Amsterdam kiest een bedrijf uit de eerste 3 Google Maps resultaten.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 Core Services -->
+  <section id="diensten">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="srv_title">Wat Buurtster elke maand voor u regelt</h2>
+        <p data-i18n="srv_sub">U doet uw vakwerk. Wij zorgen dat buurtbewoners u vinden, vertrouwen en direct boeken.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon">1</div>
+          <h3 data-i18n="srv1_t">Google Maps Top-3 Optimalisatie</h3>
+          <p data-i18n="srv1_p">
+            Volledige inrichting van uw Google Bedrijfsprofiel: juiste categorieën, werkgebied in Amsterdam, dienstenlijst en wekelijkse foto- en actie-updates.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">2</div>
+          <h3 data-i18n="srv2_t">Automatische 5-Sterren Review Machine</h3>
+          <p data-i18n="srv2_p">
+            Kant-en-klare QR-baliekaarten en automatische WhatsApp/SMS-uitnodigingen na elke klus. Plus: wij beantwoorden elke review professioneel binnen 48 uur.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">3</div>
+          <h3 data-i18n="srv3_t">24/7 Gemiste Oproep & Klantvangst</h3>
+          <p data-i18n="srv3_p">
+            Bent u bezig met een klus of is het na sluitingstijd? Onze slimme assistent vangt aanvragen in het Nederlands, Turks en Engels direct op en stuurt ze naar uw telefoon.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pakketten" class="pricing-section">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="prc_title">Heldere Maandpakketten (Maandelijks Opzegbaar)</h2>
+        <p data-i18n="prc_sub">Geen lange wurgcontracten. Eén extra klant per maand verdient uw abonnement al terug.</p>
+      </div>
+
+      <div class="founder-banner">
+        <div>
+          <strong data-i18n="fnd_title">★ Kennismakingsactie voor de eerste 3 bedrijven in uw wijk:</strong>
+          <div data-i18n="fnd_desc">€ 0 opstartkosten + 50% korting op de eerste maand. Wij bewijzen eerst onze waarde.</div>
+        </div>
+        <a href="#gratis-scan" class="btn btn-primary" data-i18n="fnd_btn">Claim Uw Plek</a>
+      </div>
+
+      <div class="grid-3">
+        <!-- Start -->
+        <div class="price-card">
+          <div>
+            <div class="price-name">Buurtster Start</div>
+            <div class="price-sub" data-i18n="p1_sub">Voor kappers, bakkers, horeca & buurtwinkels</div>
+            <div class="price-tag">€ 199 <span data-i18n="per_month">/ maand (excl. btw)</span></div>
+            <div class="setup-fee" data-i18n="p1_setup">Opstartkosten: € 0</div>
+            <ul class="feature-list">
+              <li data-i18n="p1_f1">Volledige Google Bedrijfsprofiel optimalisatie</li>
+              <li data-i18n="p1_f2">QR-reviewkaart voor op de balie + WhatsApp-link</li>
+              <li data-i18n="p1_f3">Professioneel antwoord op alle reviews binnen 48u</li>
+              <li data-i18n="p1_f4">2 Google-updates per maand (foto's & acties)</li>
+              <li data-i18n="p1_f5">Maandelijks 1-pagina resultaatrapport</li>
+            </ul>
+          </div>
+          <a href="#gratis-scan" class="btn btn-secondary" data-i18n="choose_btn">Kies Start</a>
+        </div>
+
+        <!-- Groei -->
+        <div class="price-card featured">
+          <div class="popular-badge" data-i18n="most_chosen">Meest Gekozen</div>
+          <div>
+            <div class="price-name">Buurtster Groei</div>
+            <div class="price-sub" data-i18n="p2_sub">Voor garages, APK, salons & schoonmaakbedrijven</div>
+            <div class="price-tag">€ 449 <span data-i18n="per_month">/ maand (excl. btw)</span></div>
+            <div class="setup-fee" data-i18n="p2_setup">Eerste 3 klanten: € 0 opstart + 1e maand € 224,50</div>
+            <ul class="feature-list">
+              <li data-i18n="p2_f1">Alles uit het Start-pakket</li>
+              <li data-i18n="p2_f2">Automatische review-uitnodigingen (tot 100 klanten/mnd)</li>
+              <li data-i18n="p2_f3">Wekelijkse Google Maps posts & foto-optimalisatie</li>
+              <li data-i18n="p2_f4">Snelle 1-pagina landingspagina of offerte-knop</li>
+              <li data-i18n="p2_f5">24/7 gemiste-oproep & avond-opvang via WhatsApp/E-mail</li>
+            </ul>
+          </div>
+          <a href="#gratis-scan" class="btn btn-primary" data-i18n="choose_groei">Kies Groei</a>
+        </div>
+
+        <!-- Pro -->
+        <div class="price-card">
+          <div>
+            <div class="price-name">Buurtster Pro</div>
+            <div class="price-sub" data-i18n="p3_sub">Voor aannemers, loodgieters, bouw & klinieken</div>
+            <div class="price-tag">€ 799 <span data-i18n="per_month">/ maand (excl. btw)</span></div>
+            <div class="setup-fee" data-i18n="p3_setup">Eerste 3 klanten: € 0 opstart + 1e maand € 399,50</div>
+            <ul class="feature-list">
+              <li data-i18n="p3_f1">Alles uit het Groei-pakket</li>
+              <li data-i18n="p3_f2">Meertalige 24/7 Klant- & Offerte-Assistent (NL/TR/EN)</li>
+              <li data-i18n="p3_f3">Automatische opvolging van openstaande offertes</li>
+              <li data-i18n="p3_f4">Concurrentie-monitoring in 3 postcodes in Amsterdam</li>
+              <li data-i18n="p3_f5">Maandelijks persoonlijk strategiegesprek (15 min)</li>
+            </ul>
+          </div>
+          <a href="#gratis-scan" class="btn btn-secondary" data-i18n="choose_pro">Kies Pro</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Free Scan Request Section -->
+  <section id="gratis-scan">
+    <div class="container">
+      <div class="scan-box">
+        <div>
+          <div class="pill" data-i18n="scan_pill">100% Gratis & Vrijblijvend</div>
+          <h2 style="font-size:32px; font-weight:800; margin-bottom:14px;" data-i18n="scan_title">
+            Ontvang binnen 24 uur uw 1-pagina Zichtbaarheidsscan
+          </h2>
+          <p style="color:#cbd5e1; margin-bottom:20px;" data-i18n="scan_desc">
+            Wij vergelijken uw bedrijf op Google Maps met uw 3 grootste concurrenten in dezelfde straat of wijk. U ziet direct hoeveel klanten u nu misloopt en hoe we dat oplossen.
+          </p>
+          <ul style="list-style:none; color:#e2e8f0; font-size:15px;">
+            <li style="margin-bottom:8px;">✓ <strong>Direct contact:</strong> İlker Topuz (Amsterdam)</li>
+            <li style="margin-bottom:8px;">✓ <strong>E-mail:</strong> buurtster.nl@gmail.com</li>
+            <li style="margin-bottom:8px;">✓ <strong>Telefoon / WhatsApp:</strong> +31 6 27418354</li>
+            <li>✓ <strong>KvK-nummer:</strong> 42095678</li>
+          </ul>
+        </div>
+
+        <form class="scan-form" onsubmit="sendScanRequest(event)">
+          <h3 style="margin-bottom:16px; font-size:20px;" data-i18n="form_title">Vraag uw gratis rapport aan</h3>
+          <div class="form-group">
+            <label data-i18n="lbl_company">Bedrijfsnaam *</label>
+            <input type="text" id="f_company" required placeholder="Bijv. Garage Osdorp / Renovra Bouw" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_city">Wijk / Straat in Amsterdam *</label>
+            <input type="text" id="f_area" required placeholder="Bijv. Osdorp, Sloterdijk, Bos en Lommer" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_phone">Telefoon of E-mail *</label>
+            <input type="text" id="f_contact" required placeholder="06 12345678 of info@bedrijf.nl" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_pkg">Interesse in pakket</label>
+            <select id="f_pkg">
+              <option value="Gratis Scan">Alleen Gratis Scan (1 pagina)</option>
+              <option value="Start (€199)">Buurtster Start (€ 199/mnd)</option>
+              <option value="Groei (€449)">Buurtster Groei (€ 449/mnd)</option>
+              <option value="Pro (€799)">Buurtster Pro (€ 799/mnd)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;" data-i18n="form_btn">
+            Verstuur Aanvraag per E-mail
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-title">★ Buurtster — Amsterdam</div>
+          <p data-i18n="footer_about">
+            Lokale zichtbaarheid, automatische Google-reviews en 24/7 klantvangst voor ondernemers in Amsterdam en omgeving.
+          </p>
+          <div class="kvk-box">KvK-nummer: 42095678 &nbsp;|&nbsp; Vestigingsplaats: Amsterdam</div>
+        </div>
+        <div>
+          <div class="footer-title" data-i18n="footer_contact">Contact</div>
+          <p>İlker Topuz</p>
+          <p>E-mail: <a href="mailto:buurtster.nl@gmail.com" style="color:#fff;">buurtster.nl@gmail.com</a></p>
+          <p>Tel / WhatsApp: <a href="tel:+31627418354" style="color:#fff;">+31 6 27418354</a></p>
+          <p>Amsterdam, Nederland</p>
+        </div>
+        <div>
+          <div class="footer-title" data-i18n="footer_legal">Privacy & AVG</div>
+          <p data-i18n="footer_avg">
+            Wij werken volledig volgens de Nederlandse AVG en Telecommunicatiewet. Geen spam, geen nepreviews, altijd maandelijks opzegbaar.
+          </p>
+        </div>
+      </div>
+      <div style="border-top:1px solid #1e293b; padding-top:20px; text-align:center;">
+        &copy; 2026 Buurtster Amsterdam (KvK 42095678). Alle rechten voorbehouden.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const translations = {
+      nl: {
+        topbar_left: "Amsterdam Lokale Zichtbaarheid & Review Automatisering",
+        nav_services: "Wat wij doen",
+        nav_pricing: "Pakketten & Prijzen",
+        nav_scan: "Gratis Scan",
+        hero_pill: "Speciaal voor lokale bedrijven in Amsterdam",
+        hero_title: "Word de <span>#1 keuze in uw wijk</span> op Google Maps.",
+        hero_sub: "Buurtster beheert uw Google Bedrijfsprofiel, verzamelt automatisch nieuwe 5-sterren reviews van tevreden klanten en vangt gemiste oproepen 24/7 op via WhatsApp.",
+        hero_cta1: "Vraag Gratis Zichtbaarheidsscan Aan",
+        hero_cta2: "Direct WhatsApp (+31 6 27418354)",
+        comp_title: "Waarom bellen klanten uw concurrent?",
+        comp_before_name: "Zonder Buurtster (Gemiddeld bedrijf)",
+        comp_before_rank: "Positie #9 op Google",
+        comp_b_m2: "0% Antwoord",
+        comp_b_m3: "Na 18:00 onbereikbaar",
+        comp_after_name: "Met Buurtster (Binnen 60-90 dagen)",
+        comp_after_rank: "Top 3 in uw buurt",
+        comp_a_m2: "100% Antwoord <48u",
+        comp_a_m3: "24/7 WhatsApp Opvang",
+        comp_note: "78% van de klanten in Amsterdam kiest een bedrijf uit de eerste 3 Google Maps resultaten.",
+        srv_title: "Wat Buurtster elke maand voor u regelt",
+        srv_sub: "U doet uw vakwerk. Wij zorgen dat buurtbewoners u vinden, vertrouwen en direct boeken.",
+        srv1_t: "Google Maps Top-3 Optimalisatie",
+        srv1_p: "Volledige inrichting van uw Google Bedrijfsprofiel: juiste categorieën, werkgebied in Amsterdam, dienstenlijst en wekelijkse foto- en actie-updates.",
+        srv2_t: "Automatische 5-Sterren Review Machine",
+        srv2_p: "Kant-en-klare QR-baliekaarten en automatische WhatsApp/SMS-uitnodigingen na elke klus. Plus: wij beantwoorden elke review professioneel binnen 48 uur.",
+        srv3_t: "24/7 Gemiste Oproep & Klantvangst",
+        srv3_p: "Bent u bezig met een klus of is het na sluitingstijd? Onze slimme assistent vangt aanvragen in het Nederlands, Turks en Engels direct op en stuurt ze naar uw telefoon.",
+        prc_title: "Heldere Maandpakketten (Maandelijks Opzegbaar)",
+        prc_sub: "Geen lange wurgcontracten. Eén extra klant per maand verdient uw abonnement al terug.",
+        fnd_title: "★ Kennismakingsactie voor de eerste 3 bedrijven in uw wijk:",
+        fnd_desc: "€ 0 opstartkosten + 50% korting op de eerste maand. Wij bewijzen eerst onze waarde.",
+        fnd_btn: "Claim Uw Plek",
+        per_month: "/ maand (excl. btw)",
+        p1_sub: "Voor kappers, bakkers, horeca & buurtwinkels",
+        p1_setup: "Opstartkosten: € 0",
+        p1_f1: "Volledige Google Bedrijfsprofiel optimalisatie",
+        p1_f2: "QR-reviewkaart voor op de balie + WhatsApp-link",
+        p1_f3: "Professioneel antwoord op alle reviews binnen 48u",
+        p1_f4: "2 Google-updates per maand (foto's & acties)",
+        p1_f5: "Maandelijks 1-pagina resultaatrapport",
+        choose_btn: "Kies Start",
+        most_chosen: "Meest Gekozen",
+        p2_sub: "Voor garages, APK, salons & schoonmaakbedrijven",
+        p2_setup: "Eerste 3 klanten: € 0 opstart + 1e maand € 224,50",
+        p2_f1: "Alles uit het Start-pakket",
+        p2_f2: "Automatische review-uitnodigingen (tot 100 klanten/mnd)",
+        p2_f3: "Wekelijkse Google Maps posts & foto-optimalisatie",
+        p2_f4: "Snelle 1-pagina landingspagina of offerte-knop",
+        p2_f5: "24/7 gemiste-oproep & avond-opvang via WhatsApp/E-mail",
+        choose_groei: "Kies Groei",
+        p3_sub: "Voor aannemers, loodgieters, bouw & klinieken",
+        p3_setup: "Eerste 3 klanten: € 0 opstart + 1e maand € 399,50",
+        p3_f1: "Alles uit het Groei-pakket",
+        p3_f2: "Meertalige 24/7 Klant- & Offerte-Assistent (NL/TR/EN)",
+        p3_f3: "Automatische opvolging van openstaande offertes",
+        p3_f4: "Concurrentie-monitoring in 3 postcodes in Amsterdam",
+        p3_f5: "Maandelijks persoonlijk strategiegesprek (15 min)",
+        choose_pro: "Kies Pro",
+        scan_pill: "100% Gratis & Vrijblijvend",
+        scan_title: "Ontvang binnen 24 uur uw 1-pagina Zichtbaarheidsscan",
+        scan_desc: "Wij vergelijken uw bedrijf op Google Maps met uw 3 grootste concurrenten in dezelfde straat of wijk. U ziet direct hoeveel klanten u nu misloopt en hoe we dat oplossen.",
+        form_title: "Vraag uw gratis rapport aan",
+        lbl_company: "Bedrijfsnaam *",
+        lbl_city: "Wijk / Straat in Amsterdam *",
+        lbl_phone: "Telefoon of E-mail *",
+        lbl_pkg: "Interesse in pakket",
+        form_btn: "Verstuur Aanvraag per E-mail",
+        footer_about: "Lokale zichtbaarheid, automatische Google-reviews en 24/7 klantvangst voor ondernemers in Amsterdam en omgeving.",
+        footer_contact: "Contact",
+        footer_legal: "Privacy & AVG",
+        footer_avg: "Wij werken volledig volgens de Nederlandse AVG en Telecommunicatiewet. Geen spam, geen nepreviews, altijd maandelijks opzegbaar."
+      },
+      tr: {
+        topbar_left: "Amsterdam Yerel Görünürlük ve Otomatik Müşteri Yakalama Sistemi",
+        nav_services: "Ne Yapıyoruz?",
+        nav_pricing: "Paketler ve Fiyatlar",
+        nav_scan: "Ücretsiz Analiz",
+        hero_pill: "Amsterdam'daki yerel işletmeler için özel sistem",
+        hero_title: "Google Haritalar'da <span>mahallenizin 1 numarası</span> olun.",
+        hero_sub: "Buurtster; Google İşletme Profilinizi yönetir, memnun müşterilerinizden otomatik 5 yıldızlı yorum toplar ve mesai dışı gelen talepleri 7/24 WhatsApp ile yakalar.",
+        hero_cta1: "Ücretsiz Görünürlük Analizi İste",
+        hero_cta2: "WhatsApp'tan Yaz (+31 6 27418354)",
+        comp_title: "Müşteriler neden rakibinizi arıyor?",
+        comp_before_name: "Buurtster Öncesi (Ortalama Dükkan)",
+        comp_before_rank: "Google'da 9. Sıra",
+        comp_b_m2: "%0 Yorum Yanıtı",
+        comp_b_m3: "Akşam 18:00'den sonra kapalı",
+        comp_after_name: "Buurtster Sonrası (60-90 Gün İçinde)",
+        comp_after_rank: "Mahallede İlk 3 Sıra",
+        comp_a_m2: "48 Saatte %100 Yanıt",
+        comp_a_m3: "7/24 WhatsApp Karşılama",
+        comp_note: "Amsterdam'daki müşterilerin %78'i Google Haritalar'da ilk 3 sırada çıkan işletmeyi arar.",
+        srv_title: "Buurtster Her Ay Sizin İçin Neleri Yönetir?",
+        srv_sub: "Siz ustalığınızı ve işinizi yapın. Mahallelinin sizi bulmasını, güvenmesini ve randevu almasını biz sağlayalım.",
+        srv1_t: "Google Haritalar İlk 3 Sıra Optimizasyonu",
+        srv1_p: "Google İşletme Profilinizin eksiksiz kurulumu: doğru kategoriler, Amsterdam hizmet bölgeleri, fiyat/hizmet listesi ve haftalık fotoğraf/kampanya paylaşımları.",
+        srv2_t: "Otomatik 5 Yıldızlı Yorum Makinesi",
+        srv2_p: "Kasa önü hazır QR kartları ve iş bitimi otomatik WhatsApp/SMS yorum daveti. Üstelik gelen tüm yorumları 48 saat içinde Türkçe ve Hollandaca profesyonelce yanıtlıyoruz.",
+        srv3_t: "7/24 Kaçan Çağrı ve Müşteri Yakalama",
+        srv3_p: "İş başındayken veya akşam dükkan kapalıyken gelen mesajları Hollandaca, Türkçe ve İngilizce karşılayıp telefonunuza hazır müşteri olarak iletiyoruz.",
+        prc_title: "Şeffaf Aylık Paketler (Taahhütsüz, İstediğin Ay Durdur)",
+        prc_sub: "Uzun sözleşme baskısı yok. Ayda gelen tek bir ekstra müşteri bile paket ücretinizi fazlasıyla çıkarır.",
+        fnd_title: "★ Mahallenizdeki İlk 3 İşletmeye Özel Kurucu Teklifi:",
+        fnd_desc: "0 € Kurulum Ücreti + İlk Ay %50 İndirim. Önce kazandırdığımız müşteriyi görün, sonra devam edin.",
+        fnd_btn: "İndirimli Kontenjanı Ayırt",
+        per_month: "/ ay (KDV hariç)",
+        p1_sub: "Berber, kuaför, fırın, restoran ve mahalle esnafı için",
+        p1_setup: "Kurulum Ücreti: 0 €",
+        p1_f1: "Tam kapsamlı Google İşletme Profili düzenlemesi",
+        p1_f2: "Kasa önü QR yorum kartı + tek tık WhatsApp yorum bağlantısı",
+        p1_f3: "Tüm müşteri yorumlarına 48 saat içinde profesyonel yanıt",
+        p1_f4: "Ayda 2 kez Google fotoğraf ve kampanya paylaşımı",
+        p1_f5: "Her ay sonu 1 sayfalık net performans raporu",
+        choose_btn: "Start Paketini Seç",
+        most_chosen: "En Çok Tercih Edilen",
+        p2_sub: "Oto servis (APK), halı yıkama, güzellik salonu ve temizlik firmaları için",
+        p2_setup: "İlk 3 müşteriye özel: 0 € kurulum + İlk ay 224,50 €",
+        p2_f1: "Start paketindeki tüm özellikler",
+        p2_f2: "Otomatik yorum isteme sistemi (ayda 100 müşteriye kadar)",
+        p2_f3: "Haftalık Google Haritalar paylaşımı ve fotoğraf güncellemesi",
+        p2_f4: "Hızlı 1 sayfalık tanıtım ve randevu/teklif sayfası",
+        p2_f5: "Mesai dışı kaçan müşterileri WhatsApp/E-posta ile yakalama",
+        choose_groei: "Groei Paketini Seç",
+        p3_sub: "İnşaat, tadilat, tesisatçı, elektrikçi ve klinikler için",
+        p3_setup: "İlk 3 müşteriye özel: 0 € kurulum + İlk ay 399,50 €",
+        p3_f1: "Groei paketindeki tüm özellikler",
+        p3_f2: "3 Dilli (NL/TR/EN) 7/24 Müşteri ve Teklif Karşılama Asistanı",
+        p3_f3: "Verilen fiyat tekliflerinin otomatik hatırlatma ve takibi",
+        p3_f4: "Amsterdam'da 3 posta kodunda rakip sıralama takibi",
+        p3_f5: "Her ay 15 dakikalık birebir büyüme görüşmesi",
+        choose_pro: "Pro Paketini Seç",
+        scan_pill: "%100 Ücretsiz ve Taahhütsüz",
+        scan_title: "24 Saat İçinde 1 Sayfalık Görünürlük Raporunuzu Alın",
+        scan_desc: "İşletmenizi aynı caddedeki en büyük 3 rakibinizle karşılaştırıyoruz. Şu an kaç müşteri kaybettiğinizi ve bunu nasıl çözeceğimizi tek sayfada görün.",
+        form_title: "Ücretsiz Raporunuzu İsteyin",
+        lbl_company: "İşletme Adı *",
+        lbl_city: "Amsterdam'daki Semt / Cadde *",
+        lbl_phone: "Telefon veya E-posta *",
+        lbl_pkg: "İlgilendiğiniz Paket",
+        form_btn: "Talebi E-posta ile Gönder",
+        footer_about: "Amsterdam ve çevresindeki işletmeler için yerel görünürlük, otomatik Google yorumları ve 7/24 müşteri yakalama sistemi.",
+        footer_contact: "İletişim",
+        footer_legal: "Gizlilik ve Yasal Uyum",
+        footer_avg: "Hollanda AVG ve iletişim kurallarına tam uyumlu çalışıyoruz. Spam yok, sahte yorum yok, her zaman aylık iptal hakkı var."
+      },
+      en: {
+        topbar_left: "Amsterdam Local Visibility & Automated Review System",
+        nav_services: "What We Do",
+        nav_pricing: "Packages & Pricing",
+        nav_scan: "Free Audit",
+        hero_pill: "Built for local businesses in Amsterdam",
+        hero_title: "Become the <span>#1 choice in your neighborhood</span> on Google Maps.",
+        hero_sub: "Buurtster manages your Google Business Profile, automatically collects 5-star reviews from happy customers, and captures missed calls 24/7 via WhatsApp.",
+        hero_cta1: "Request Free Visibility Scan",
+        hero_cta2: "WhatsApp Direct (+31 6 27418354)",
+        comp_title: "Why are customers calling your competitor?",
+        comp_before_name: "Without Buurtster (Average shop)",
+        comp_before_rank: "Position #9 on Google",
+        comp_b_m2: "0% Reply Rate",
+        comp_b_m3: "Unreachable after 18:00",
+        comp_after_name: "With Buurtster (Within 60-90 days)",
+        comp_after_rank: "Top 3 in your area",
+        comp_a_m2: "100% Reply <48h",
+        comp_a_m3: "24/7 WhatsApp Capture",
+        comp_note: "78% of local customers in Amsterdam call one of the top 3 results on Google Maps.",
+        srv_title: "What Buurtster handles for you every month",
+        srv_sub: "You focus on your craft. We make sure local customers find you, trust you, and book you.",
+        srv1_t: "Google Maps Top-3 Optimization",
+        srv1_p: "Complete setup of your Google Business Profile: right categories, Amsterdam service areas, service menu, and weekly photo & offer updates.",
+        srv2_t: "Automated 5-Star Review Engine",
+        srv2_p: "Ready-to-use counter QR cards and automated WhatsApp/SMS review requests after every job. Plus: we reply to every review within 48 hours.",
+        srv3_t: "24/7 Missed Call & Lead Capture",
+        srv3_p: "Busy on a job or closed for the evening? Our smart assistant captures inquiries in Dutch, Turkish, and English and sends them straight to your phone.",
+        prc_title: "Transparent Monthly Plans (Cancel Anytime)",
+        prc_sub: "No long lock-in contracts. Just one extra customer a month pays for your entire plan.",
+        fnd_title: "★ Founding Offer for the first 3 businesses in your area:",
+        fnd_desc: "€ 0 setup fee + 50% off your first month. Let us prove our value first.",
+        fnd_btn: "Claim Your Spot",
+        per_month: "/ month (excl. VAT)",
+        p1_sub: "For barbers, bakeries, cafes & local shops",
+        p1_setup: "Setup fee: € 0",
+        p1_f1: "Full Google Business Profile optimization",
+        p1_f2: "Counter QR review card + direct WhatsApp link",
+        p1_f3: "Professional reply to all reviews within 48h",
+        p1_f4: "2 Google updates per month (photos & offers)",
+        p1_f5: "Monthly 1-page performance report",
+        choose_btn: "Choose Start",
+        most_chosen: "Most Popular",
+        p2_sub: "For auto garages, APK, salons & cleaning services",
+        p2_setup: "First 3 clients: € 0 setup + 1st month € 224.50",
+        p2_f1: "Everything in Start",
+        p2_f2: "Automated review invitations (up to 100 clients/mo)",
+        p2_f3: "Weekly Google Maps posts & photo optimization",
+        p2_f4: "Fast 1-page landing page or quote request button",
+        p2_f5: "24/7 missed-call & after-hours lead capture",
+        choose_groei: "Choose Groei",
+        p3_sub: "For contractors, plumbers, construction & clinics",
+        p3_setup: "First 3 clients: € 0 setup + 1st month € 399.50",
+        p3_f1: "Everything in Groei",
+        p3_f2: "Multilingual 24/7 Lead & Quote Assistant (NL/TR/EN)",
+        p3_f3: "Automated follow-up on open quotes",
+        p3_f4: "Competitor tracking across 3 Amsterdam postcodes",
+        p3_f5: "Monthly 15-min strategy call",
+        choose_pro: "Choose Pro",
+        scan_pill: "100% Free & No Obligation",
+        scan_title: "Get your 1-page Visibility Audit within 24 hours",
+        scan_desc: "We compare your business on Google Maps against your 3 biggest competitors on the same street. See exactly how many leads you are missing.",
+        form_title: "Request your free report",
+        lbl_company: "Business Name *",
+        lbl_city: "Neighborhood / Street in Amsterdam *",
+        lbl_phone: "Phone or Email *",
+        lbl_pkg: "Package of Interest",
+        form_btn: "Send Request via Email",
+        footer_about: "Local visibility, automated Google reviews, and 24/7 lead capture for businesses in Amsterdam.",
+        footer_contact: "Contact",
+        footer_legal: "Privacy & GDPR",
+        footer_avg: "Fully compliant with Dutch GDPR (AVG) and telecom laws. No spam, no fake reviews, cancel monthly anytime."
+      }
+    };
+
+    function setLang(lang) {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-' + lang).classList.add('active');
+      const dict = translations[lang];
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key]) {
+          el.innerHTML = dict[key];
+        }
+      });
+    }
+
+    function sendScanRequest(e) {
+      e.preventDefault();
+      const company = document.getElementById('f_company').value.trim();
+      const area = document.getElementById('f_area').value.trim();
+      const contact = document.getElementById('f_contact').value.trim();
+      const pkg = document.getElementById('f_pkg').value;
+      const subject = encodeURIComponent("Gratis Zichtbaarheidsscan Aanvraag - " + company);
+      const body = encodeURIComponent(
+        "Bedrijfsnaam: " + company + "\n" +
+        "Wijk / Adres: " + area + "\n" +
+        "Contact: " + contact + "\n" +
+        "Pakket: " + pkg + "\n"
+      );
+      window.location.href = "mailto:buurtster.nl@gmail.com?subject=" + subject + "&body=" + body;
+    }
+  </script>
+</body>
+</html>
+
