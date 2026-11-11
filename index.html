@@ -599,7 +599,7 @@
               <li data-i18n="p1_f5">Maandelijks 1-pagina resultaatrapport</li>
             </ul>
           </div>
-          <a href="#gratis-scan" class="btn btn-secondary" data-i18n="choose_btn">Kies Start</a>
+          <a href="#bestellen" onclick="selectPackage('Start')" class="btn btn-secondary" data-i18n="choose_btn">Kies Start</a>
         </div>
 
         <!-- Groei -->
@@ -618,7 +618,7 @@
               <li data-i18n="p2_f5">24/7 gemiste-oproep & avond-opvang via WhatsApp/E-mail</li>
             </ul>
           </div>
-          <a href="#gratis-scan" class="btn btn-primary" data-i18n="choose_groei">Kies Groei</a>
+          <a href="#bestellen" onclick="selectPackage('Groei')" class="btn btn-primary" data-i18n="choose_groei">Kies Groei</a>
         </div>
 
         <!-- Pro -->
@@ -636,8 +636,81 @@
               <li data-i18n="p3_f5">Maandelijks persoonlijk strategiegesprek (15 min)</li>
             </ul>
           </div>
-          <a href="#gratis-scan" class="btn btn-secondary" data-i18n="choose_pro">Kies Pro</a>
+          <a href="#bestellen" onclick="selectPackage('Pro')" class="btn btn-secondary" data-i18n="choose_pro">Kies Pro</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Direct Checkout & Corporate IBAN Payment Section -->
+  <section id="bestellen" style="background:#ffffff; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0;">
+    <div class="container">
+      <div class="section-head">
+        <h2 data-i18n="chk_title">Direct Pakket Activeren & Zakelijke Betaling</h2>
+        <p data-i18n="chk_sub">Kies uw pakket, maak het bedrag over naar onze zakelijke ING-rekening en wij starten binnen 24 uur met de inrichting.</p>
+      </div>
+
+      <div class="scan-box" style="background:#f8fafc; color:#0f172a; border:2px solid #e2e8f0;">
+        <div>
+          <h3 style="font-size:22px; font-weight:800; margin-bottom:14px;" data-i18n="chk_bank_title">Zakelijke Bankgegevens (Overboeking / Factuur)</h3>
+          <p style="color:#475569; font-size:15px; margin-bottom:18px;" data-i18n="chk_bank_desc">
+            Alle betalingen verlopen veilig en rechtstreeks via onze zakelijke rekening bij ING Bank (met officiële btw-factuur).
+          </p>
+
+          <div style="background:#0f172a; color:#ffffff; padding:22px; border-radius:14px; margin-bottom:18px;">
+            <div style="font-size:13px; color:#94a3b8; text-transform:uppercase; font-weight:700;" data-i18n="chk_beneficiary_lbl">Begunstigde (Ten name van)</div>
+            <div style="font-size:18px; font-weight:800; margin-bottom:12px;">Buurtster Amsterdam — İ. Topuz (KvK: 42095678)</div>
+
+            <div style="font-size:13px; color:#94a3b8; text-transform:uppercase; font-weight:700;">Zakelijk IBAN (ING Bank)</div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:4px; margin-bottom:12px;">
+              <span id="iban_text" style="font-size:22px; font-weight:900; color:#fbbf24; letter-spacing:1px;">NL96 INGB 0119 5627 23</span>
+              <button type="button" onclick="copyIban()" id="copy_iban_btn" style="background:#f97316; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;" data-i18n="chk_copy_btn">Kopieer IBAN</button>
+            </div>
+
+            <div style="font-size:13px; color:#cbd5e1;" data-i18n="chk_ref_note">
+              <strong>Omschrijving bij betaling:</strong> Vermeld uw <em>Bedrijfsnaam + gekozen pakket</em>. U ontvangt dezelfde dag uw btw-factuur per e-mail.
+            </div>
+          </div>
+
+          <div id="price_summary_box" style="background:#fff7ed; border:1px solid #fed7aa; padding:16px; border-radius:12px; font-size:14px;">
+            <strong style="color:#ea580c; font-size:16px;" id="summary_pkg_name">Gekozen: Buurtster Groei (Kennismakingsactie 1e maand 50%)</strong>
+            <div style="margin-top:6px; color:#1e293b;" id="summary_pkg_math">
+              1e maand bedrag: <strong>€ 224,50</strong> excl. btw (+ 21% btw € 47,15 = <strong>€ 271,65 incl. btw</strong>) · Opstartkosten: <strong>€ 0</strong>
+            </div>
+          </div>
+        </div>
+
+        <form class="scan-form" style="border:1px solid #cbd5e1;" onsubmit="submitOrder(event)">
+          <h3 style="margin-bottom:16px; font-size:20px;" data-i18n="chk_form_title">Bevestig Uw Bestelling & Factuurgegevens</h3>
+          <div class="form-group">
+            <label data-i18n="chk_lbl_pkg">Kies Pakket *</label>
+            <select id="ord_pkg" onchange="updateOrderMath()">
+              <option value="Start">Buurtster Start — € 199,00 / mnd (excl. btw) [€ 240,79 incl. btw]</option>
+              <option value="Groei_Founder" selected>Buurtster Groei (Eerste maand 50% actie) — € 224,50 (excl. btw) [€ 271,65 incl. btw]</option>
+              <option value="Groei">Buurtster Groei (Standaard) — € 449,00 / mnd (excl. btw) [€ 543,29 incl. btw]</option>
+              <option value="Pro_Founder">Buurtster Pro (Eerste maand 50% actie) — € 399,50 (excl. btw) [€ 483,40 incl. btw]</option>
+              <option value="Pro">Buurtster Pro (Standaard) — € 799,00 / mnd (excl. btw) [€ 966,79 incl. btw]</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_company">Bedrijfsnaam *</label>
+            <input type="text" id="ord_company" required placeholder="Bijv. Renovra Bouw B.V." />
+          </div>
+          <div class="form-group">
+            <label data-i18n="chk_lbl_kvk">KvK-nummer of Adres (voor op de factuur) *</label>
+            <input type="text" id="ord_kvk" required placeholder="Bijv. KvK 12345678 - Osdorperweg, Amsterdam" />
+          </div>
+          <div class="form-group">
+            <label data-i18n="lbl_phone">E-mail & Telefoonnummer *</label>
+            <input type="text" id="ord_contact" required placeholder="info@bedrijf.nl / 06 12345678" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:10px;" data-i18n="chk_btn_email">
+            Bevestig Bestelling & Vraag Btw-Factuur Aan
+          </button>
+          <button type="button" onclick="submitOrderWhatsApp()" class="btn btn-whatsapp" style="width:100%;" data-i18n="chk_btn_wa">
+            Stuur Betaalbevestiging via WhatsApp
+          </button>
+        </form>
       </div>
     </div>
   </section>
@@ -702,13 +775,14 @@
           <p data-i18n="footer_about">
             Lokale zichtbaarheid, automatische Google-reviews en 24/7 klantvangst voor ondernemers in Amsterdam en omgeving.
           </p>
-          <div class="kvk-box">KvK-nummer: 42095678 &nbsp;|&nbsp; Vestigingsplaats: Amsterdam</div>
+          <div class="kvk-box">KvK: 42095678 &nbsp;|&nbsp; Zakelijk IBAN: NL96 INGB 0119 5627 23</div>
         </div>
         <div>
           <div class="footer-title" data-i18n="footer_contact">Contact</div>
           <p>İlker Topuz</p>
           <p>E-mail: <a href="mailto:buurtster.nl@gmail.com" style="color:#fff;">buurtster.nl@gmail.com</a></p>
           <p>Tel / WhatsApp: <a href="tel:+31627418354" style="color:#fff;">+31 6 27418354</a></p>
+          <p>IBAN: NL96 INGB 0119 5627 23 (ING)</p>
           <p>Amsterdam, Nederland</p>
         </div>
         <div>
@@ -797,7 +871,19 @@
         footer_about: "Lokale zichtbaarheid, automatische Google-reviews en 24/7 klantvangst voor ondernemers in Amsterdam en omgeving.",
         footer_contact: "Contact",
         footer_legal: "Privacy & AVG",
-        footer_avg: "Wij werken volledig volgens de Nederlandse AVG en Telecommunicatiewet. Geen spam, geen nepreviews, altijd maandelijks opzegbaar."
+        footer_avg: "Wij werken volledig volgens de Nederlandse AVG en Telecommunicatiewet. Geen spam, geen nepreviews, altijd maandelijks opzegbaar.",
+        chk_title: "Direct Pakket Activeren & Zakelijke Betaling",
+        chk_sub: "Kies uw pakket, maak het bedrag over naar onze zakelijke ING-rekening en wij starten binnen 24 uur met de inrichting.",
+        chk_bank_title: "Zakelijke Bankgegevens (Overboeking / Factuur)",
+        chk_bank_desc: "Alle betalingen verlopen veilig en rechtstreeks via onze zakelijke rekening bij ING Bank (met officiële btw-factuur).",
+        chk_beneficiary_lbl: "Begunstigde (Ten name van)",
+        chk_copy_btn: "Kopieer IBAN",
+        chk_ref_note: "<strong>Omschrijving bij betaling:</strong> Vermeld uw <em>Bedrijfsnaam + gekozen pakket</em>. U ontvangt dezelfde dag uw btw-factuur per e-mail.",
+        chk_form_title: "Bevestig Uw Bestelling & Factuurgegevens",
+        chk_lbl_pkg: "Kies Pakket *",
+        chk_lbl_kvk: "KvK-nummer of Adres (voor op de factuur) *",
+        chk_btn_email: "Bevestig Bestelling & Vraag Btw-Factuur Aan",
+        chk_btn_wa: "Stuur Betaalbevestiging via WhatsApp"
       },
       tr: {
         topbar_left: "Amsterdam Yerel Görünürlük ve Otomatik Müşteri Yakalama Sistemi",
@@ -870,7 +956,19 @@
         footer_about: "Amsterdam ve çevresindeki işletmeler için yerel görünürlük, otomatik Google yorumları ve 7/24 müşteri yakalama sistemi.",
         footer_contact: "İletişim",
         footer_legal: "Gizlilik ve Yasal Uyum",
-        footer_avg: "Hollanda AVG ve iletişim kurallarına tam uyumlu çalışıyoruz. Spam yok, sahte yorum yok, her zaman aylık iptal hakkı var."
+        footer_avg: "Hollanda AVG ve iletişim kurallarına tam uyumlu çalışıyoruz. Spam yok, sahte yorum yok, her zaman aylık iptal hakkı var.",
+        chk_title: "Paketi Hemen Başlat ve Kurumsal Ödeme Yap",
+        chk_sub: "Paketinizi seçin, ödemenizi doğrudan ING Bank şirket hesabımıza gönderin; 24 saat içinde kurulumunuzu başlatalım.",
+        chk_bank_title: "Şirket Banka Bilgileri (Havale / Resmi Faturalı)",
+        chk_bank_desc: "Tüm ödemeler resmi KDV faturası (BTW-factuur) ile doğrudan ING Bank kurumsal hesabımıza güvenle yapılır.",
+        chk_beneficiary_lbl: "Alıcı Şirket Adı",
+        chk_copy_btn: "IBAN Kopyala",
+        chk_ref_note: "<strong>Ödeme Açıklaması:</strong> Havale açıklamasına <em>İşletme Adınız + Seçtiğiniz Paket</em> yazmanız yeterlidir. Resmi faturanız aynı gün e-postanıza gönderilir.",
+        chk_form_title: "Sipariş ve Fatura Bilgilerinizi Onaylayın",
+        chk_lbl_pkg: "Paket Seçiniz *",
+        chk_lbl_kvk: "KvK Numaranız veya Fatura Adresiniz *",
+        chk_btn_email: "Siparişi Onayla ve Resmi Fatura İste",
+        chk_btn_wa: "Ödeme Bildirimini WhatsApp'tan Gönder"
       },
       en: {
         topbar_left: "Amsterdam Local Visibility & Automated Review System",
@@ -943,9 +1041,83 @@
         footer_about: "Local visibility, automated Google reviews, and 24/7 lead capture for businesses in Amsterdam.",
         footer_contact: "Contact",
         footer_legal: "Privacy & GDPR",
-        footer_avg: "Fully compliant with Dutch GDPR (AVG) and telecom laws. No spam, no fake reviews, cancel monthly anytime."
+        footer_avg: "Fully compliant with Dutch GDPR (AVG) and telecom laws. No spam, no fake reviews, cancel monthly anytime.",
+        chk_title: "Activate Your Plan & Direct Business Payment",
+        chk_sub: "Select your package, transfer to our business ING account, and we launch your setup within 24 hours.",
+        chk_bank_title: "Corporate Bank Details (ING Bank / VAT Invoice)",
+        chk_bank_desc: "All payments are processed directly via our corporate ING Bank account with an official Dutch VAT invoice.",
+        chk_beneficiary_lbl: "Beneficiary Name",
+        chk_copy_btn: "Copy IBAN",
+        chk_ref_note: "<strong>Payment Reference:</strong> Please include your <em>Business Name + Selected Plan</em>. Your VAT invoice is emailed the same day.",
+        chk_form_title: "Confirm Your Order & Invoice Details",
+        chk_lbl_pkg: "Select Package *",
+        chk_lbl_kvk: "KvK Number or Billing Address *",
+        chk_btn_email: "Confirm Order & Request VAT Invoice",
+        chk_btn_wa: "Send Payment Confirmation via WhatsApp"
       }
     };
+
+    const pkgDetails = {
+      Start: { name: "Buurtster Start", excl: "199,00", btw: "41,79", incl: "240,79", setup: "€ 0" },
+      Groei_Founder: { name: "Buurtster Groei (Eerste maand 50% actie)", excl: "224,50", btw: "47,15", incl: "271,65", setup: "€ 0" },
+      Groei: { name: "Buurtster Groei (Standaard)", excl: "449,00", btw: "94,29", incl: "543,29", setup: "€ 249" },
+      Pro_Founder: { name: "Buurtster Pro (Eerste maand 50% actie)", excl: "399,50", btw: "83,90", incl: "483,40", setup: "€ 0" },
+      Pro: { name: "Buurtster Pro (Standaard)", excl: "799,00", btw: "167,79", incl: "966,79", setup: "€ 399" }
+    };
+
+    function selectPackage(pkg) {
+      const sel = document.getElementById('ord_pkg');
+      if (pkg === 'Start') sel.value = 'Start';
+      if (pkg === 'Groei') sel.value = 'Groei_Founder';
+      if (pkg === 'Pro') sel.value = 'Pro_Founder';
+      updateOrderMath();
+    }
+
+    function updateOrderMath() {
+      const val = document.getElementById('ord_pkg').value;
+      const p = pkgDetails[val] || pkgDetails.Groei_Founder;
+      document.getElementById('summary_pkg_name').textContent = "Gekozen / Seçilen: " + p.name;
+      document.getElementById('summary_pkg_math').innerHTML =
+        "Bedrag / Tutar: <strong>€ " + p.excl + "</strong> excl. btw (+ 21% btw € " + p.btw + " = <strong>€ " + p.incl + " incl. btw</strong>) · Opstart / Kurulum: <strong>" + p.setup + "</strong>";
+    }
+
+    function copyIban() {
+      navigator.clipboard.writeText("NL96INGB0119562723");
+      const btn = document.getElementById('copy_iban_btn');
+      const old = btn.textContent;
+      btn.textContent = "✓ Gekopieerd / Kopyalandı!";
+      setTimeout(() => { btn.textContent = old; }, 2200);
+    }
+
+    function submitOrder(e) {
+      e.preventDefault();
+      const val = document.getElementById('ord_pkg').value;
+      const p = pkgDetails[val] || pkgDetails.Groei_Founder;
+      const company = document.getElementById('ord_company').value.trim();
+      const kvk = document.getElementById('ord_kvk').value.trim();
+      const contact = document.getElementById('ord_contact').value.trim();
+      const subject = encodeURIComponent("Nieuwe Bestelling Buurtster - " + company + " (" + p.name + ")");
+      const body = encodeURIComponent(
+        "Nieuwe bestelling & factuuraanvraag:\n\n" +
+        "Pakket: " + p.name + "\n" +
+        "Bedrag (incl. 21% btw): € " + p.incl + "\n" +
+        "Zakelijk IBAN: NL96 INGB 0119 5627 23 (t.n.v. Buurtster Amsterdam, KvK 42095678)\n\n" +
+        "Bedrijfsnaam klant: " + company + "\n" +
+        "KvK / Factuuradres: " + kvk + "\n" +
+        "Contactgegevens: " + contact + "\n"
+      );
+      window.location.href = "mailto:buurtster.nl@gmail.com?subject=" + subject + "&body=" + body;
+    }
+
+    function submitOrderWhatsApp() {
+      const val = document.getElementById('ord_pkg').value;
+      const p = pkgDetails[val] || pkgDetails.Groei_Founder;
+      const company = document.getElementById('ord_company').value.trim() || "Mijn Bedrijf";
+      const msg = encodeURIComponent(
+        "Hallo Buurtster, ik heb zojuist gekozen voor " + p.name + " (€ " + p.incl + " incl. btw) voor " + company + " naar IBAN NL96INGB0119562723."
+      );
+      window.open("https://wa.me/31627418354?text=" + msg, "_blank");
+    }
 
     function setLang(lang) {
       document.documentElement.lang = lang;
