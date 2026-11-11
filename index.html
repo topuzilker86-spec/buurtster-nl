@@ -436,8 +436,8 @@
     }
 
     @media (max-width: 860px) {
-      .hero-grid, .grid-3, .scan-box, .footer-grid {
-        grid-template-columns: 1fr;
+      .hero-grid, .grid-3, .scan-box, .footer-grid, .checkout-grid {
+        grid-template-columns: 1fr !important;
       }
       .hero h1 { font-size: 32px; }
       .price-card.featured { transform: none; }
@@ -580,7 +580,7 @@
           <strong data-i18n="fnd_title">★ Kennismakingsactie voor de eerste 3 bedrijven in uw wijk:</strong>
           <div data-i18n="fnd_desc">€ 0 opstartkosten + 50% korting op de eerste maand. Wij bewijzen eerst onze waarde.</div>
         </div>
-        <a href="#gratis-scan" class="btn btn-primary" data-i18n="fnd_btn">Claim Uw Plek</a>
+        <a href="javascript:void(0)" onclick="openCheckout('Groei_Founder')" class="btn btn-primary" data-i18n="fnd_btn">Claim Uw Plek</a>
       </div>
 
       <div class="grid-3">
@@ -599,7 +599,7 @@
               <li data-i18n="p1_f5">Maandelijks 1-pagina resultaatrapport</li>
             </ul>
           </div>
-          <a href="#bestellen" onclick="selectPackage('Start')" class="btn btn-secondary" data-i18n="choose_btn">Kies Start</a>
+          <button type="button" onclick="openCheckout('Start')" class="btn btn-secondary" style="width:100%;" data-i18n="choose_btn">Kies Start</button>
         </div>
 
         <!-- Groei -->
@@ -618,7 +618,7 @@
               <li data-i18n="p2_f5">24/7 gemiste-oproep & avond-opvang via WhatsApp/E-mail</li>
             </ul>
           </div>
-          <a href="#bestellen" onclick="selectPackage('Groei')" class="btn btn-primary" data-i18n="choose_groei">Kies Groei</a>
+          <button type="button" onclick="openCheckout('Groei_Founder')" class="btn btn-primary" style="width:100%;" data-i18n="choose_groei">Kies Groei</button>
         </div>
 
         <!-- Pro -->
@@ -636,84 +636,170 @@
               <li data-i18n="p3_f5">Maandelijks persoonlijk strategiegesprek (15 min)</li>
             </ul>
           </div>
-          <a href="#bestellen" onclick="selectPackage('Pro')" class="btn btn-secondary" data-i18n="choose_pro">Kies Pro</a>
+          <button type="button" onclick="openCheckout('Pro_Founder')" class="btn btn-secondary" style="width:100%;" data-i18n="choose_pro">Kies Pro</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Direct Checkout & Corporate IBAN Payment Section -->
-  <section id="bestellen" style="background:#ffffff; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0;">
-    <div class="container">
-      <div class="section-head">
-        <h2 data-i18n="chk_title">Direct Pakket Activeren & Zakelijke Betaling</h2>
-        <p data-i18n="chk_sub">Kies uw pakket, maak het bedrag over naar onze zakelijke ING-rekening en wij starten binnen 24 uur met de inrichting.</p>
+  <!-- Full-Screen Checkout Modal (Opens when a package is chosen) -->
+  <div id="checkout_overlay" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.82); z-index:9999; overflow-y:auto; padding:24px 16px;">
+    <div style="max-width:960px; margin:20px auto; background:#ffffff; border-radius:20px; box-shadow:0 30px 60px rgba(0,0,0,0.45); overflow:hidden;">
+      <!-- Checkout Header -->
+      <div style="background:#0f172a; color:#fff; padding:18px 28px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="logo-star" style="width:30px; height:30px; font-size:16px;">★</span>
+          <strong style="font-size:18px;">Buurtster Checkout</strong>
+          <span style="background:#1e293b; color:#22c55e; font-size:12px; padding:4px 10px; border-radius:999px; font-weight:700;">🔒 SSL Beveiligde Betaling</span>
+        </div>
+        <button type="button" onclick="closeCheckout()" style="background:transparent; border:1px solid #475569; color:#cbd5e1; padding:6px 14px; border-radius:8px; cursor:pointer; font-weight:700;">✕ Sluiten</button>
       </div>
 
-      <div class="scan-box" style="background:#f8fafc; color:#0f172a; border:2px solid #e2e8f0;">
-        <div>
-          <h3 style="font-size:22px; font-weight:800; margin-bottom:14px;" data-i18n="chk_bank_title">Zakelijke Bankgegevens (Overboeking / Factuur)</h3>
-          <p style="color:#475569; font-size:15px; margin-bottom:18px;" data-i18n="chk_bank_desc">
-            Alle betalingen verlopen veilig en rechtstreeks via onze zakelijke rekening bij ING Bank (met officiële btw-factuur).
-          </p>
+      <!-- Checkout Body Grid -->
+      <div style="display:grid; grid-template-columns: 0.95fr 1.05fr; min-height:520px;" class="checkout-grid">
+        <!-- Left: Order Summary -->
+        <div style="background:#f8fafc; padding:32px; border-right:1px solid #e2e8f0; display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.6px; color:#64748b; font-weight:800; margin-bottom:8px;">Besteloverzicht</div>
+            <h3 id="co_pkg_title" style="font-size:24px; font-weight:900; color:#0f172a; margin-bottom:6px;">Buurtster Groei</h3>
+            <p id="co_pkg_badge" style="display:inline-block; background:#dcfce7; color:#15803d; font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px; margin-bottom:20px;">
+              ✓ Kennismakingsactie: € 0 opstart + 50% korting 1e maand
+            </p>
 
-          <div style="background:#0f172a; color:#ffffff; padding:22px; border-radius:14px; margin-bottom:18px;">
-            <div style="font-size:13px; color:#94a3b8; text-transform:uppercase; font-weight:700;" data-i18n="chk_beneficiary_lbl">Begunstigde (Ten name van)</div>
-            <div style="font-size:18px; font-weight:800; margin-bottom:12px;">Buurtster Amsterdam — İ. Topuz (KvK: 42095678)</div>
-
-            <div style="font-size:13px; color:#94a3b8; text-transform:uppercase; font-weight:700;">Zakelijk IBAN (ING Bank)</div>
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-top:4px; margin-bottom:12px;">
-              <span id="iban_text" style="font-size:22px; font-weight:900; color:#fbbf24; letter-spacing:1px;">NL96 INGB 0119 5627 23</span>
-              <button type="button" onclick="copyIban()" id="copy_iban_btn" style="background:#f97316; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer; font-size:13px;" data-i18n="chk_copy_btn">Kopieer IBAN</button>
+            <div style="margin-bottom:20px;">
+              <label style="font-size:12px; font-weight:700; color:#475569; display:block; margin-bottom:6px;">Wijzig pakket:</label>
+              <select id="ord_pkg" onchange="updateOrderMath()" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; font-weight:700; font-size:14px;">
+                <option value="Start">Buurtster Start (€ 199,00 / mnd excl. btw)</option>
+                <option value="Groei_Founder" selected>Buurtster Groei — 1e maand 50% actie (€ 224,50 excl. btw)</option>
+                <option value="Groei">Buurtster Groei — Standaard (€ 449,00 / mnd excl. btw)</option>
+                <option value="Pro_Founder">Buurtster Pro — 1e maand 50% actie (€ 399,50 excl. btw)</option>
+                <option value="Pro">Buurtster Pro — Standaard (€ 799,00 / mnd excl. btw)</option>
+              </select>
             </div>
 
-            <div style="font-size:13px; color:#cbd5e1;" data-i18n="chk_ref_note">
-              <strong>Omschrijving bij betaling:</strong> Vermeld uw <em>Bedrijfsnaam + gekozen pakket</em>. U ontvangt dezelfde dag uw btw-factuur per e-mail.
+            <div style="border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0; padding:16px 0; margin-bottom:16px; font-size:15px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="color:#475569;">Subtotaal (excl. btw)</span>
+                <strong id="co_excl">€ 224,50</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="color:#475569;">Eenmalige opstartkosten</span>
+                <strong id="co_setup" style="color:#16a34a;">€ 0,00</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="color:#475569;">BTW (21%)</span>
+                <strong id="co_btw">€ 47,15</strong>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:20px; font-weight:900; color:#0f172a;">
+              <span>Totaal te betalen</span>
+              <span id="co_incl" style="color:#ea580c; font-size:26px;">€ 271,65</span>
             </div>
           </div>
 
-          <div id="price_summary_box" style="background:#fff7ed; border:1px solid #fed7aa; padding:16px; border-radius:12px; font-size:14px;">
-            <strong style="color:#ea580c; font-size:16px;" id="summary_pkg_name">Gekozen: Buurtster Groei (Kennismakingsactie 1e maand 50%)</strong>
-            <div style="margin-top:6px; color:#1e293b;" id="summary_pkg_math">
-              1e maand bedrag: <strong>€ 224,50</strong> excl. btw (+ 21% btw € 47,15 = <strong>€ 271,65 incl. btw</strong>) · Opstartkosten: <strong>€ 0</strong>
-            </div>
+          <div style="margin-top:28px; font-size:13px; color:#64748b; background:#fff; padding:14px; border-radius:10px; border:1px solid #e2e8f0;">
+            <strong>✓ Maandelijks opzegbaar</strong><br/>
+            <strong>✓ Officiële Nederlandse btw-factuur</strong><br/>
+            <strong>✓ Binnen 24 uur live & ingericht</strong>
           </div>
         </div>
 
-        <form class="scan-form" style="border:1px solid #cbd5e1;" onsubmit="submitOrder(event)">
-          <h3 style="margin-bottom:16px; font-size:20px;" data-i18n="chk_form_title">Bevestig Uw Bestelling & Factuurgegevens</h3>
-          <div class="form-group">
-            <label data-i18n="chk_lbl_pkg">Kies Pakket *</label>
-            <select id="ord_pkg" onchange="updateOrderMath()">
-              <option value="Start">Buurtster Start — € 199,00 / mnd (excl. btw) [€ 240,79 incl. btw]</option>
-              <option value="Groei_Founder" selected>Buurtster Groei (Eerste maand 50% actie) — € 224,50 (excl. btw) [€ 271,65 incl. btw]</option>
-              <option value="Groei">Buurtster Groei (Standaard) — € 449,00 / mnd (excl. btw) [€ 543,29 incl. btw]</option>
-              <option value="Pro_Founder">Buurtster Pro (Eerste maand 50% actie) — € 399,50 (excl. btw) [€ 483,40 incl. btw]</option>
-              <option value="Pro">Buurtster Pro (Standaard) — € 799,00 / mnd (excl. btw) [€ 966,79 incl. btw]</option>
-            </select>
+        <!-- Right: Step 1 (Details & Method) and Step 2 (Payment Gateway Screen) -->
+        <div style="padding:32px;">
+          <!-- STEP 1 -->
+          <form id="checkout_step1" onsubmit="goToPaymentStep(event)">
+            <div style="font-size:12px; text-transform:uppercase; letter-spacing:0.6px; color:#ea580c; font-weight:800; margin-bottom:6px;">Stap 1 van 2</div>
+            <h3 style="font-size:22px; font-weight:800; margin-bottom:18px;">Factuurgegevens & Betaalmethode</h3>
+
+            <div class="form-group">
+              <label>Bedrijfsnaam *</label>
+              <input type="text" id="ord_company" required placeholder="Bijv. Renovra Bouw B.V." />
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div class="form-group">
+                <label>KvK-nummer *</label>
+                <input type="text" id="ord_kvk" required placeholder="Bijv. 87654321" />
+              </div>
+              <div class="form-group">
+                <label>Telefoonnummer *</label>
+                <input type="text" id="ord_phone" required placeholder="06 12345678" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Zakelijk E-mailadres (voor btw-factuur) *</label>
+              <input type="email" id="ord_email" required placeholder="info@uwbedrijf.nl" />
+            </div>
+
+            <div class="form-group" style="margin-top:16px;">
+              <label style="margin-bottom:8px;">Kies uw betaalmethode *</label>
+              <div style="border:2px solid #f97316; background:#fff7ed; border-radius:10px; padding:12px; margin-bottom:10px;">
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin:0; font-size:15px;">
+                  <input type="radio" name="pay_method" value="bank_app" checked style="width:18px; height:18px;" />
+                  <span><strong>iDEAL QR / Nederlandse Bank-app</strong> (Direct afrekenen met uw bank)</span>
+                </label>
+                <div style="margin-top:10px; padding-left:28px;">
+                  <select id="ord_bank" style="width:100%; padding:10px; border-radius:8px; border:1px solid #cbd5e1; font-size:14px; font-weight:600;">
+                    <option value="ING">ING Bank</option>
+                    <option value="Rabobank">Rabobank</option>
+                    <option value="ABN AMRO">ABN AMRO</option>
+                    <option value="SNS">SNS Bank</option>
+                    <option value="Knab">Knab Zakelijk</option>
+                    <option value="Bunq">bunq</option>
+                    <option value="ASN / RegioBank">ASN / RegioBank</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="border:1px solid #cbd5e1; border-radius:10px; padding:12px;">
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin:0; font-size:15px;">
+                  <input type="radio" name="pay_method" value="sepa_transfer" style="width:18px; height:18px;" />
+                  <span><strong>SEPA Zakelijke Overboeking</strong> (Direct betalen op factuurreferentie)</span>
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:12px; font-size:17px; padding:16px;">
+              Ga door naar Betaling (<span id="btn_pay_amt">€ 271,65</span>) →
+            </button>
+          </form>
+
+          <!-- STEP 2: Real Bank Payment Screen -->
+          <div id="checkout_step2" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <span style="font-size:12px; text-transform:uppercase; letter-spacing:0.6px; color:#16a34a; font-weight:800;">Stap 2 van 2 · Betaalomgeving</span>
+              <button type="button" onclick="backToStep1()" style="background:none; border:none; color:#2563eb; cursor:pointer; font-weight:700; font-size:13px;">← Gegevens wijzigen</button>
+            </div>
+            <h3 style="font-size:21px; font-weight:800; margin-bottom:6px;">Rond uw betaling af via <span id="step2_bank_name" style="color:#ea580c;">ING Bank</span></h3>
+            <p style="font-size:14px; color:#475569; margin-bottom:16px;">
+              Scan de onderstaande Europese SEPA Bank-QR met uw <strong><span id="step2_bank_name2">ING</span> Mobiel Bankieren App</strong> (het bedrag, IBAN en kenmerk staan al automatisch ingevuld), of bevestig de zakelijke overboeking.
+            </p>
+
+            <div style="display:grid; grid-template-columns:170px 1fr; gap:18px; align-items:center; background:#f8fafc; border:2px solid #e2e8f0; border-radius:14px; padding:18px; margin-bottom:18px;">
+              <div style="text-align:center; background:#fff; padding:10px; border-radius:12px; border:1px solid #cbd5e1;">
+                <img id="sepa_qr_img" src="" alt="SEPA Bank QR" style="width:145px; height:145px; display:block; margin:0 auto;" />
+                <div style="font-size:11px; font-weight:800; color:#0f172a; margin-top:6px;">SCAN MET BANK-APP</div>
+              </div>
+              <div style="font-size:14px; line-height:1.7;">
+                <div><span style="color:#64748b;">Te betalen bedrag:</span> <strong id="step2_amt" style="font-size:18px; color:#16a34a;">€ 271,65</strong></div>
+                <div><span style="color:#64748b;">Begunstigde:</span> <strong>Buurtster Amsterdam</strong></div>
+                <div><span style="color:#64748b;">Zakelijk IBAN:</span> <strong style="color:#0f172a; background:#fef3c7; padding:2px 6px; border-radius:4px;">NL96 INGB 0119 5627 23</strong></div>
+                <div><span style="color:#64748b;">BIC / Bank:</span> <strong>INGBNL2A (ING Bank)</strong></div>
+                <div><span style="color:#64748b;">Betalingskenmerk:</span> <strong id="step2_ref" style="color:#ea580c;">BS-2026-KLANT</strong></div>
+              </div>
+            </div>
+
+            <button type="button" onclick="completePaymentAndNotify()" class="btn btn-primary" style="width:100%; background:#16a34a; margin-bottom:10px; padding:16px; font-size:16px;">
+              ✓ Ik heb betaald — Activeer Pakket & Stuur Btw-Factuur
+            </button>
+            <button type="button" onclick="submitOrderWhatsApp()" class="btn btn-secondary" style="width:100%; font-size:14px; padding:12px;">
+              Directe bevestiging via WhatsApp (+31 6 27418354)
+            </button>
           </div>
-          <div class="form-group">
-            <label data-i18n="lbl_company">Bedrijfsnaam *</label>
-            <input type="text" id="ord_company" required placeholder="Bijv. Renovra Bouw B.V." />
-          </div>
-          <div class="form-group">
-            <label data-i18n="chk_lbl_kvk">KvK-nummer of Adres (voor op de factuur) *</label>
-            <input type="text" id="ord_kvk" required placeholder="Bijv. KvK 12345678 - Osdorperweg, Amsterdam" />
-          </div>
-          <div class="form-group">
-            <label data-i18n="lbl_phone">E-mail & Telefoonnummer *</label>
-            <input type="text" id="ord_contact" required placeholder="info@bedrijf.nl / 06 12345678" />
-          </div>
-          <button type="submit" class="btn btn-primary" style="width:100%; margin-bottom:10px;" data-i18n="chk_btn_email">
-            Bevestig Bestelling & Vraag Btw-Factuur Aan
-          </button>
-          <button type="button" onclick="submitOrderWhatsApp()" class="btn btn-whatsapp" style="width:100%;" data-i18n="chk_btn_wa">
-            Stuur Betaalbevestiging via WhatsApp
-          </button>
-        </form>
+        </div>
       </div>
     </div>
-  </section>
+  </div>
 
   <!-- Free Scan Request Section -->
   <section id="gratis-scan">
@@ -775,14 +861,13 @@
           <p data-i18n="footer_about">
             Lokale zichtbaarheid, automatische Google-reviews en 24/7 klantvangst voor ondernemers in Amsterdam en omgeving.
           </p>
-          <div class="kvk-box">KvK: 42095678 &nbsp;|&nbsp; Zakelijk IBAN: NL96 INGB 0119 5627 23</div>
+          <div class="kvk-box">KvK-nummer: 42095678 &nbsp;|&nbsp; Vestigingsplaats: Amsterdam</div>
         </div>
         <div>
           <div class="footer-title" data-i18n="footer_contact">Contact</div>
           <p>İlker Topuz</p>
           <p>E-mail: <a href="mailto:buurtster.nl@gmail.com" style="color:#fff;">buurtster.nl@gmail.com</a></p>
           <p>Tel / WhatsApp: <a href="tel:+31627418354" style="color:#fff;">+31 6 27418354</a></p>
-          <p>IBAN: NL96 INGB 0119 5627 23 (ING)</p>
           <p>Amsterdam, Nederland</p>
         </div>
         <div>
@@ -1058,53 +1143,101 @@
     };
 
     const pkgDetails = {
-      Start: { name: "Buurtster Start", excl: "199,00", btw: "41,79", incl: "240,79", setup: "€ 0" },
-      Groei_Founder: { name: "Buurtster Groei (Eerste maand 50% actie)", excl: "224,50", btw: "47,15", incl: "271,65", setup: "€ 0" },
-      Groei: { name: "Buurtster Groei (Standaard)", excl: "449,00", btw: "94,29", incl: "543,29", setup: "€ 249" },
-      Pro_Founder: { name: "Buurtster Pro (Eerste maand 50% actie)", excl: "399,50", btw: "83,90", incl: "483,40", setup: "€ 0" },
-      Pro: { name: "Buurtster Pro (Standaard)", excl: "799,00", btw: "167,79", incl: "966,79", setup: "€ 399" }
+      Start: { name: "Buurtster Start", badge: "✓ Maandelijks pakket · € 0 opstartkosten", excl: "199,00", btw: "41,79", incl: "240,79", inclNum: "240.79", setup: "€ 0,00" },
+      Groei_Founder: { name: "Buurtster Groei (Kennismakingsactie)", badge: "✓ Eerste maand 50% korting + € 0 opstart", excl: "224,50", btw: "47,15", incl: "271,65", inclNum: "271.65", setup: "€ 0,00" },
+      Groei: { name: "Buurtster Groei", badge: "✓ Meest gekozen door lokale bedrijven", excl: "449,00", btw: "94,29", incl: "543,29", inclNum: "543.29", setup: "€ 249,00" },
+      Pro_Founder: { name: "Buurtster Pro (Kennismakingsactie)", badge: "✓ Eerste maand 50% korting + € 0 opstart", excl: "399,50", btw: "83,90", incl: "483,40", inclNum: "483.40", setup: "€ 0,00" },
+      Pro: { name: "Buurtster Pro", badge: "✓ Volledige 24/7 ontzorging & meertalige opvang", excl: "799,00", btw: "167,79", incl: "966,79", inclNum: "966.79", setup: "€ 399,00" }
     };
 
-    function selectPackage(pkg) {
+    function openCheckout(pkgKey) {
       const sel = document.getElementById('ord_pkg');
-      if (pkg === 'Start') sel.value = 'Start';
-      if (pkg === 'Groei') sel.value = 'Groei_Founder';
-      if (pkg === 'Pro') sel.value = 'Pro_Founder';
+      sel.value = pkgKey || 'Groei_Founder';
       updateOrderMath();
+      backToStep1();
+      document.getElementById('checkout_overlay').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkout_overlay').style.display = 'none';
+      document.body.style.overflow = '';
     }
 
     function updateOrderMath() {
       const val = document.getElementById('ord_pkg').value;
       const p = pkgDetails[val] || pkgDetails.Groei_Founder;
-      document.getElementById('summary_pkg_name').textContent = "Gekozen / Seçilen: " + p.name;
-      document.getElementById('summary_pkg_math').innerHTML =
-        "Bedrag / Tutar: <strong>€ " + p.excl + "</strong> excl. btw (+ 21% btw € " + p.btw + " = <strong>€ " + p.incl + " incl. btw</strong>) · Opstart / Kurulum: <strong>" + p.setup + "</strong>";
+      document.getElementById('co_pkg_title').textContent = p.name;
+      document.getElementById('co_pkg_badge').textContent = p.badge;
+      document.getElementById('co_excl').textContent = "€ " + p.excl;
+      document.getElementById('co_setup').textContent = p.setup;
+      document.getElementById('co_btw').textContent = "€ " + p.btw;
+      document.getElementById('co_incl').textContent = "€ " + p.incl;
+      document.getElementById('btn_pay_amt').textContent = "€ " + p.incl;
     }
 
-    function copyIban() {
-      navigator.clipboard.writeText("NL96INGB0119562723");
-      const btn = document.getElementById('copy_iban_btn');
-      const old = btn.textContent;
-      btn.textContent = "✓ Gekopieerd / Kopyalandı!";
-      setTimeout(() => { btn.textContent = old; }, 2200);
-    }
-
-    function submitOrder(e) {
+    function goToPaymentStep(e) {
       e.preventDefault();
       const val = document.getElementById('ord_pkg').value;
       const p = pkgDetails[val] || pkgDetails.Groei_Founder;
       const company = document.getElementById('ord_company').value.trim();
+      const bank = document.getElementById('ord_bank').value;
+      const cleanRef = "BS-" + company.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 12);
+
+      document.getElementById('step2_bank_name').textContent = bank;
+      document.getElementById('step2_bank_name2').textContent = bank;
+      document.getElementById('step2_amt').textContent = "€ " + p.incl;
+      document.getElementById('step2_ref').textContent = cleanRef + " (" + p.name + ")";
+
+      // Official EPC SEPA QR payload supported by ING, Rabobank, ABN AMRO, Knab, Bunq apps
+      const epcPayload = [
+        "BCD",
+        "002",
+        "1",
+        "SCT",
+        "INGBNL2A",
+        "Buurtster Amsterdam",
+        "NL96INGB0119562723",
+        "EUR" + p.inclNum,
+        "",
+        "",
+        cleanRef + " " + p.name
+      ].join("\n");
+
+      document.getElementById('sepa_qr_img').src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data=" + encodeURIComponent(epcPayload);
+
+      document.getElementById('checkout_step1').style.display = 'none';
+      document.getElementById('checkout_step2').style.display = 'block';
+    }
+
+    function backToStep1() {
+      document.getElementById('checkout_step2').style.display = 'none';
+      document.getElementById('checkout_step1').style.display = 'block';
+    }
+
+    function completePaymentAndNotify() {
+      const val = document.getElementById('ord_pkg').value;
+      const p = pkgDetails[val] || pkgDetails.Groei_Founder;
+      const company = document.getElementById('ord_company').value.trim();
       const kvk = document.getElementById('ord_kvk').value.trim();
-      const contact = document.getElementById('ord_contact').value.trim();
-      const subject = encodeURIComponent("Nieuwe Bestelling Buurtster - " + company + " (" + p.name + ")");
+      const phone = document.getElementById('ord_phone').value.trim();
+      const email = document.getElementById('ord_email').value.trim();
+      const bank = document.getElementById('ord_bank').value;
+
+      const subject = encodeURIComponent("Betaling & Bestelling: " + company + " - " + p.name);
       const body = encodeURIComponent(
-        "Nieuwe bestelling & factuuraanvraag:\n\n" +
+        "Beste Buurtster Amsterdam,\n\n" +
+        "Wij hebben zojuist onze bestelling geplaatst en de betaling voldaan:\n\n" +
         "Pakket: " + p.name + "\n" +
-        "Bedrag (incl. 21% btw): € " + p.incl + "\n" +
-        "Zakelijk IBAN: NL96 INGB 0119 5627 23 (t.n.v. Buurtster Amsterdam, KvK 42095678)\n\n" +
-        "Bedrijfsnaam klant: " + company + "\n" +
-        "KvK / Factuuradres: " + kvk + "\n" +
-        "Contactgegevens: " + contact + "\n"
+        "Totaalbedrag (incl. 21% btw): € " + p.incl + "\n" +
+        "Betaalwijze / Bank: " + bank + " (naar NL96 INGB 0119 5627 23)\n\n" +
+        "Factuurgegevens klant:\n" +
+        "Bedrijfsnaam: " + company + "\n" +
+        "KvK-nummer: " + kvk + "\n" +
+        "E-mailadres: " + email + "\n" +
+        "Telefoonnummer: " + phone + "\n\n" +
+        "Graag ontvangen wij de btw-factuur en de bevestiging van de opstart."
       );
       window.location.href = "mailto:buurtster.nl@gmail.com?subject=" + subject + "&body=" + body;
     }
@@ -1114,7 +1247,7 @@
       const p = pkgDetails[val] || pkgDetails.Groei_Founder;
       const company = document.getElementById('ord_company').value.trim() || "Mijn Bedrijf";
       const msg = encodeURIComponent(
-        "Hallo Buurtster, ik heb zojuist gekozen voor " + p.name + " (€ " + p.incl + " incl. btw) voor " + company + " naar IBAN NL96INGB0119562723."
+        "Hallo Buurtster, wij hebben zojuist " + p.name + " (€ " + p.incl + " incl. btw) besteld en betaald voor " + company + "."
       );
       window.open("https://wa.me/31627418354?text=" + msg, "_blank");
     }
